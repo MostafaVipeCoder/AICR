@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@600;800&family=IBM+Plex+Sans+Arabic:wght@400;600&family=IBM+Plex+Mono&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root{--blue:#0B4F9E;--magenta:#B01C83;--purple:#5B2C83;--yellow:#F5B11A;--green:#1E8C5A;--ink:#121933;--muted:#596182;--line:#E0E4EF;--soft:#F2F4FA}
+  *{box-sizing:border-box}
+  body{margin:0;background:#fff;color:var(--ink);font-family:"IBM Plex Sans Arabic",Tahoma,sans-serif}
+  .bar{height:10px;background:linear-gradient(270deg,var(--blue) 0 25%,var(--magenta) 25% 50%,var(--purple) 50% 75%,var(--yellow) 75%)}
+  .wrap{display:grid;grid-template-columns:340px 1fr;gap:36px;padding:28px 36px;min-height:calc(100vh - 10px)}
+  @media (max-width:860px){.wrap{grid-template-columns:1fr;padding:16px}}
+  aside{background:var(--soft);border-radius:24px;padding:24px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;align-self:start}
+  aside b.brand{font-family:Alexandria,sans-serif;color:var(--blue);letter-spacing:.06em}
+  #qr{background:#fff;padding:12px;border-radius:14px}
+  #qr img,#qr canvas{width:260px!important;height:260px!important}
+  .url{font-family:"IBM Plex Mono",monospace;font-size:11px;direction:ltr;word-break:break-all;color:var(--muted)}
+  .count{font-family:Alexandria,sans-serif;font-size:22px}
+  .count b{display:block;font-size:64px;color:var(--blue);font-family:"IBM Plex Mono",monospace}
+  h1{font-family:Alexandria,sans-serif;font-size:34px;margin:0 0 6px}
+  .top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+  .btn{font-family:Alexandria,sans-serif;font-size:16px;padding:10px 20px;border-radius:999px;border:2px solid var(--blue);background:#fff;color:var(--blue);cursor:pointer}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:22px 36px}
+  .qb h3{font-size:19px;margin:0 0 8px;line-height:1.5}
+  .row{display:grid;grid-template-columns:1fr 48px;gap:10px;align-items:center;margin-bottom:6px}
+  .bt{position:relative;background:var(--soft);border-radius:10px;height:40px;overflow:hidden}
+  .bt i{position:absolute;inset:0 0 0 auto;width:0;background:#B9C3DD;transition:width .7s ease}
+  .bt span{position:relative;padding:0 12px;line-height:40px;font-size:17px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row b{font-family:"IBM Plex Mono",monospace;font-size:20px;text-align:left}
+  .reveal .row.correct .bt i{background:var(--green)}
+  .reveal .row.correct .bt span{color:#fff;font-weight:600}
+  .tally .bt{height:64px}.tally .bt span{line-height:64px;font-size:26px;font-family:Alexandria,sans-serif;direction:ltr;text-align:right}
+  .tally .bt i{background:var(--blue)}
+  .msg{background:#FFF4D9;border-radius:16px;padding:16px}
+</style>
+</head>
+<body>
+<div class="bar"></div>
+<div class="wrap">
+  <aside>
+    <b class="brand">AICR · كرياتيفا المنيا</b>
+    <div id="qr"></div>
+    <div class="url" id="url"></div>
+    <div class="count">المشاركين<b id="total">0</b></div>
+  </aside>
+  <section id="main">
+    <div class="top"><div><h1 id="title"></h1><span id="round" style="color:var(--muted)"></span></div>
+      <button class="btn" id="rv">إظهار الإجابات</button></div>
+    <div id="body"><p style="color:var(--muted)">في انتظار أول إجابة…</p></div>
+  </section>
+</div>
+<script>
+  var QUIZ = <?!= quizJson ?>;
+  var QUIZ_ID = <?!= JSON.stringify(quizId) ?>;
+  var ROUND = <?!= JSON.stringify(round) ?>;
+  var BASE = <?!= JSON.stringify(baseUrl) ?>;
+  var main=document.getElementById('main');
+
+  if(!QUIZ){ document.getElementById('body').innerHTML='<div class="msg">الرابط ناقص: لازم يكون فيه quiz=</div>'; }
+  else{
+    document.getElementById('title').textContent=QUIZ.title;
+    document.getElementById('round').textContent=ROUND?('المجموعة: '+ROUND):'';
+    var join=BASE+'?page=quiz&quiz='+encodeURIComponent(QUIZ_ID)+(ROUND?'&round='+encodeURIComponent(ROUND):'');
+    document.getElementById('url').textContent=join;
+    try{ new QRCode(document.getElementById('qr'),{text:join,width:260,height:260,correctLevel:QRCode.CorrectLevel.M}); }catch(e){}
+    var rv=document.getElementById('rv');
+    if(QUIZ.type!=='quiz') rv.hidden=true;
+    rv.onclick=function(){ main.classList.toggle('reveal'); rv.textContent=main.classList.contains('reveal')?'إخفاء الإجابات':'إظهار الإجابات'; };
+    tick(); setInterval(tick,3000);
+  }
+
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function tick(){ google.script.run.withSuccessHandler(draw).getResults(QUIZ_ID, ROUND); }
+  function draw(j){
+    if(!j||!j.ok) return;
+    document.getElementById('total').textContent=j.total;
+    var h='';
+    if(j.tally){
+      var mx=Math.max.apply(null,j.tally.concat([1]));
+      h='<div class="tally">'+j.quiz.tally.map(function(n,i){return '<div class="row"><div class="bt"><i style="width:'+(j.tally[i]/mx*100)+'%"></i><span>'+esc(n)+'</span></div><b>'+j.tally[i]+'</b></div>';}).join('')+'</div>';
+    } else {
+      h='<div class="grid">'+j.quiz.questions.map(function(q,qi){var c=j.counts[qi];var mx=Math.max.apply(null,c.concat([1]));
+        return '<div class="qb"><h3>'+(qi+1)+'. '+esc(q.q)+'</h3>'+q.options.map(function(o,oi){
+          return '<div class="row'+(q.answer===oi?' correct':'')+'"><div class="bt"><i style="width:'+(c[oi]/mx*100)+'%"></i><span>'+esc(o)+'</span></div><b>'+c[oi]+'</b></div>';}).join('')+'</div>';}).join('')+'</div>';
+    }
+    document.getElementById('body').innerHTML=h;
+  }
+</script>
+</body>
+</html>
