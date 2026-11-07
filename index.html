@@ -348,8 +348,17 @@ button{font:inherit;cursor:pointer}
 .toast .ic{width:22px;height:22px}
 
 /* chat -> table */
-.chat{display:flex;flex-direction:column;gap:12px;width:560px;flex:none}
-.chat div{background:#E7F7EA;border-radius:18px 18px 18px 4px;padding:10px 18px;font-size:21px;line-height:1.5;width:max-content;max-width:100%}
+.pad{width:580px;flex:none;align-self:start;background:#FFFBEA;border-radius:6px 6px 18px 18px;padding:22px 30px 26px 26px;box-shadow:0 14px 30px rgba(18,25,51,.14);transform:rotate(-1.2deg);border-top:16px solid #F5B11A;position:relative}
+.pad::before{content:"";position:absolute;inset:0 auto 0 52px;border-left:2px solid #F3B7C9}
+.pad h4{font-family:var(--display);font-size:20px;color:#A26E00;margin-bottom:6px}
+.pad div{font-size:22px;line-height:1.5;padding:7px 0;border-bottom:1.5px dashed #E6D9A8;color:#2B2F45}
+.pad s{color:var(--magenta);text-decoration-thickness:3px}
+.pad small{display:block;font-size:17px;color:var(--muted);margin-top:8px}
+.oflow{display:grid;gap:12px}
+.ostep{display:flex;gap:16px;align-items:center;background:var(--soft);border-radius:18px;padding:12px 18px;font-size:21px;line-height:1.45}
+.ostep .bub{flex:none;width:58px;height:58px;border-radius:16px;background:var(--c);color:#fff;display:grid;place-items:center}
+.ostep .bub .ic{width:32px;height:32px}
+.ostep b{font-family:var(--display);display:block;font-size:21px}
 .dtable{flex:1;border-radius:18px;overflow:hidden;border:2px solid var(--line);align-self:start;min-width:0}
 .dtable .tr{display:grid;grid-template-columns:1.1fr 1fr .8fr .6fr .8fr 1fr;font-size:20px}
 .dtable .tr span{padding:9px 12px;border-bottom:1px solid var(--line)}
@@ -1054,16 +1063,18 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
     <p class="lead in" style="--d:.8s">كل أتمتة = <b class="hl">حدث</b> + <b class="hl">إجراء</b>. النتيجة: وقت أقل وأخطاء أقل.</p>
   </div>
 
-  <div class="s" data-title="من رسائل لجدول" data-steps="1" style="--c:#0E7C86">
-    <div class="kick"><span class="time">4:10</span><span class="axis">التطبيق العملي 4 · بيانات وهمية</span></div>
-    <h2>من رسايل واتساب… لجدول بيحسب لوحده</h2>
+  <div class="s" data-title="مثال 1: نوتة ← جدول" data-steps="1" style="--c:#0E7C86">
+    <div class="kick"><span class="time">4:10</span><span class="axis">التطبيق العملي 4 · مثال 1 · بيانات وهمية</span></div>
+    <h2>من نوتة طلبات مكركبة… لجدول بيحسب لوحده</h2>
     <div class="row grow">
-      <div class="chat">
-        <div class="in" style="--d:.1s">أحمد عايز 2 مانجو كبير و1 جوافة، توصيل لشارع الحسيني</div>
-        <div class="in" style="--d:.3s">منى: 3 فراولة وسط، هتستلم من المحل</div>
-        <div class="in" style="--d:.5s">طلب من كريم 1 قصب كبير + 2 برتقال وسط توصيل كورنيش النيل</div>
-        <div class="in" style="--d:.7s">سارة 4 مانجو وسط استلام</div>
-        <div class="in" style="--d:.9s">يوسف عايز 1 جوافة كبير و1 فراولة كبير توصيل</div>
+      <div class="pad in">
+        <h4>طلبات النهارده ✎</h4>
+        <div class="in" style="--d:.2s">أحمد ٢ مانجو ك + ١ جوافة ك، توصيل شارع الحسيني</div>
+        <div class="in" style="--d:.4s">منى فراولة وسط <s>2</s> 3، هتعدي تاخدهم</div>
+        <div class="in" style="--d:.6s">كريم: قصب كبير + 2 برتقال وسط ← كورنيش النيل</div>
+        <div class="in" style="--d:.8s">سارة ٤ مانجو و، استلام</div>
+        <div class="in" style="--d:1s">يوسف جوافة ك وفراولة ك، توصيل</div>
+        <small>ك = كبير 30ج · و = وسط 20ج</small>
       </div>
       <div class="dtable f">
         <div class="tr th"><span>العميل</span><span>الصنف</span><span>الحجم</span><span>الكمية</span><span>السعر</span><span>الاستلام</span></div>
@@ -1078,37 +1089,56 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
         <div class="tr tot"><span>الإجمالي</span><span></span><span></span><span>15</span><span>360</span><span>توصيل: 3 عملاء</span></div>
       </div>
     </div>
-    <aside class="notes">الأسعار: كبير 30، وسط 20. اضغط التالي لإظهار الجدول. راجع الإجمالي مع القاعة: AI ممكن يغلط في الحساب، والمعادلة في الشيت أدق.</aside>
+    <aside class="notes">نوتة مكتوبة بإيد الكاشير: أرقام عربي وإنجليزي، اختصارات، وتصحيح (منى غيرت 2 لـ 3). اسأل القاعة: «مين يقدر يحسب الإجمالي في دقيقة؟» وبعدين اضغط التالي لإظهار الجدول. راجع الإجمالي مع القاعة: AI ممكن يغلط في الحساب، والمعادلة في الشيت أدق.</aside>
+  </div>
+
+  <div class="s" data-title="مثال 2: فورم طلبات لايف" style="--c:#0E7C86">
+    <div class="kick"><span class="time">4:15</span><span class="axis">التطبيق العملي 4 · مثال 2 · لايف مع القاعة</span></div>
+    <h2>اطلب من موبايلك… والشيت يتملي لوحده</h2>
+    <div class="live" data-link="orders"><div class="join"><div class="qr"></div><b>اطلب عصيرك · بيانات وهمية</b><p class="url"></p></div>
+      <div class="res"><div class="oflow">
+        <div class="ostep in" style="--d:.1s"><div class="bub"><svg class="ic"><use href="#i-form"/></svg></div><div><b>1. الحدث: فورم طلب</b>كل واحد يطلب: الاسم، الصنف، الحجم، الكمية، توصيل ولا استلام</div></div>
+        <div class="ostep in" style="--d:.4s"><div class="bub"><svg class="ic"><use href="#i-table"/></svg></div><div><b>2. إجراء تلقائي: صف في الشيت</b>Google Forms بيسجل كل طلب في Google Sheet لوحده، من غير نسخ ولصق</div></div>
+        <div class="ostep in" style="--d:.7s"><div class="bub"><svg class="ic"><use href="#i-sparkle"/></svg></div><div><b>3. AI يحلل</b>انسخ الجدول في ChatGPT أو Gemini بالبرومبت ده</div></div>
+      </div>
+      <div class="prompt in" style="--d:1s"><div class="ph">برومبت: حلّل الطلبات<button class="copy"><svg class="ic"><use href="#i-copy"/></svg>نسخ</button></div>
+<pre class="sm">ده جدول طلبات محل عصير (كبير 30 جنيه، وسط 20 جنيه).
+احسب: إجمالي المبيعات، أكتر صنف اتطلب، وقائمة طلبات التوصيل.
+واكتب رسالة تأكيد قصيرة لكل عميل باسمه وطلبه والمبلغ.
+[الصق الجدول هنا]</pre></div></div>
+    </div>
+    <aside class="notes">قبل المحاضرة (5 دقايق): اعمل Google Form فيه: الاسم، الصنف (قائمة: مانجو، فراولة، جوافة، قصب، برتقال)، الحجم (كبير/وسط)، الكمية، الاستلام (توصيل/استلام). من تبويب Responses اختار Link to Sheets. خلّي الفورم ما يطلبش تسجيل دخول، وحط رابطه في الإعدادات (S). وقت النشاط: افتح الشيت جنب العرض وخلّي القاعة تشوف الصفوف بتنزل. نبّه: أسماء وهمية بس.</aside>
   </div>
 
   <div class="s" data-title="البيانات والبرومبتات" style="--c:#0E7C86">
     <div class="kick"><span class="time">4:10</span><span class="axis">التطبيق العملي 4</span></div>
     <div class="row" style="justify-content:space-between;align-items:center"><h2 style="font-size:46px">جرّب بنفسك</h2><div class="timer" data-min="25"></div></div>
     <div class="row grow">
-      <div class="prompt" style="flex:1"><div class="ph">البيانات التدريبية<button class="copy"><svg class="ic"><use href="#i-copy"/></svg>نسخ</button></div>
-<pre class="sm">أحمد عايز 2 مانجو كبير و1 جوافة، التوصيل لشارع الحسيني
-منى: 3 فراولة وسط، هتستلم من المحل
-طلب من كريم 1 قصب كبير + 2 برتقال وسط توصيل كورنيش النيل
-سارة 4 مانجو وسط استلام
-يوسف عايز 1 جوافة كبير و1 فراولة كبير توصيل
-الأسعار: كبير 30 جنيه، وسط 20 جنيه</pre></div>
+      <div class="prompt" style="flex:1"><div class="ph">نوتة الطلبات (مثال 1)<button class="copy"><svg class="ic"><use href="#i-copy"/></svg>نسخ</button></div>
+<pre class="sm">أحمد ٢ مانجو ك + ١ جوافة ك، توصيل شارع الحسيني
+منى فراولة وسط 2.. لا خليهم 3، هتعدي تاخدهم
+كريم: قصب كبير + 2 برتقال وسط ← كورنيش النيل
+سارة ٤ مانجو و، استلام
+يوسف جوافة ك وفراولة ك، توصيل
+ك = كبير 30 جنيه، و = وسط 20 جنيه</pre></div>
       <div class="col" style="flex:1.2">
         <div class="prompt"><div class="ph">برومبت: نظّم البيانات<button class="copy"><svg class="ic"><use href="#i-copy"/></svg>نسخ</button></div>
 <pre class="sm">حوّل الطلبات التالية إلى جدول بالأعمدة: اسم العميل، الصنف، الحجم، الكمية، سعر الوحدة، الإجمالي، طريقة الاستلام، العنوان. كل صنف في صف. بعد الجدول اكتب: إجمالي المبيعات، أكثر صنف مطلوب، وعدد طلبات التوصيل.
-[الصق الطلبات هنا]</pre></div>
+لو فيه تصحيح في الطلب (زي «2.. لا خليهم 3») خد الرقم الأخير. ك = كبير، و = وسط.
+[الصق النوتة أو جدول الفورم هنا]</pre></div>
         <div class="prompt"><div class="ph">برومبت: معادلة Google Sheets<button class="copy"><svg class="ic"><use href="#i-copy"/></svg>نسخ</button></div>
 <pre class="sm">عندي جدول في Google Sheets: العمود D الكمية، العمود E سعر الوحدة، العمود G طريقة الاستلام (توصيل أو استلام).
 اكتب معادلة للإجمالي في العمود F، ومعادلة تعد صفوف "توصيل". اشرح كل معادلة في سطر.</pre></div>
       </div>
     </div>
-    <aside class="notes">الخطوات: نظّم بالبرومبت، انقل للشيت، طبّق المعادلتين، ارسم فكرة أتمتة لمهمة في حياتك (حدث ← إجراء). اعرض تغيير رقم في الشيت وتحديث الإجمالي تلقائيًا.</aside>
+    <aside class="notes">اختار حسب القاعة: نوتة مثال 1 (من غير إنترنت كتير)، أو ردود فورم مثال 2. الخطوات: نظّم بالبرومبت، انقل للشيت، طبّق المعادلتين، ارسم فكرة أتمتة لمهمة في حياتك (حدث ← إجراء). اعرض تغيير رقم في الشيت وتحديث الإجمالي تلقائيًا.</aside>
   </div>
 
   <div class="s" data-title="المخرج والخطوة التالية" style="--c:#0E7C86">
     <div class="kick"><span class="time">4:30</span><span class="axis">المحور 4</span></div>
     <h2>المخرج… والحدود</h2>
     <div class="col grow" style="justify-content:center">
-      <div class="call out in"><svg class="ic"><use href="#i-star"/></svg><div><b>المخرج</b>Google Sheet فيه جدول منظم + معادلتين شغالين + فكرة أتمتة مكتوبة: «حدث ← إجراء».</div></div>
+      <div class="call out in"><svg class="ic"><use href="#i-star"/></svg><div><b>المخرج</b>Google Sheet فيه جدول منظم (من النوتة أو من الفورم) + معادلتين شغالين + فكرة أتمتة مكتوبة: «حدث ← إجراء».</div></div>
       <div class="call safe in" style="--d:.2s"><svg class="ic"><use href="#i-lock"/></svg><div><b>في الشغل الحقيقي</b>ما ترفعش أسماء وأرقام وعناوين عملاء لأدوات AI عامة. بدّلها برموز قبل الرفع.</div></div>
       <div class="call next in" style="--d:.4s"><svg class="ic"><use href="#i-flag"/></svg><div><b>الخطوة التالية</b>أنظمة أتمتة كاملة، بوتات للرد على الأسئلة، ولوحات متابعة: تراك AI Automation &amp; Data.</div></div>
     </div>
@@ -1461,7 +1491,7 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
   <div class="s" data-title="التسجيل في التراكات" style="--c:var(--blue)">
     <div class="kick"><span class="time">2:47</span><span class="axis">التسجيل</span></div>
     <h2>سجّل في التراك اللي اخترته</h2>
-    <div class="live" data-register><div class="join"><div class="qr"></div><b>رابط التسجيل</b><p class="url"></p></div>
+    <div class="live" data-link="register"><div class="join"><div class="qr"></div><b>رابط التسجيل</b><p class="url"></p></div>
       <div class="res"><div class="kv" style="--t:var(--blue)"><div><b>المواعيد</b><span data-cfg="dates">يضيفها المدرب من الإعدادات</span></div><div><b>شروط الالتحاق</b><span data-cfg="terms">يضيفها المدرب من الإعدادات</span></div><div><b>مدة كل تراك</b>8 أيام تدريب عملي</div></div>
       <div class="call safe"><svg class="ic"><use href="#i-alert"/></svg><div>المشاركة في البرنامج لا تضمن القبول في التراك. اختار على حسب اهتمامك.</div></div></div>
     </div>
@@ -1729,6 +1759,7 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
   <p>تتحفظ على الجهاز ده بس.</p>
   <label>رابط Google Apps Script (ينتهي بـ /exec)<input id="cfgScript" placeholder="https://script.google.com/macros/s/.../exec"></label>
   <label>كود المجموعة (يفصل نتايج كل مجموعة عن التانية، مثال: minya-g1)<input id="cfgRound" placeholder="minya-g1"></label>
+  <label>رابط فورم الطلبات (نشاط الأتمتة، اليوم 1)<input id="cfgOrders" placeholder="https://forms.gle/..."></label>
   <label>رابط التسجيل في التراكات<input id="cfgRegister" placeholder="https://..."></label>
   <label>مواعيد التراكات<input id="cfgDates" style="direction:rtl;font-family:var(--body)"></label>
   <label>شروط الالتحاق<input id="cfgTerms" style="direction:rtl;font-family:var(--body)"></label>
@@ -1744,7 +1775,7 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
 
   var stage=document.getElementById('stage');
   var store={get:function(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set:function(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-  var cfg=Object.assign({script:DEFAULT_SCRIPT_URL,round:'',register:'',dates:'',terms:'',techne:''},store.get('aicr:cfg',{}));
+  var cfg=Object.assign({script:DEFAULT_SCRIPT_URL,round:'',orders:'',register:'',dates:'',terms:'',techne:''},store.get('aicr:cfg',{}));
   if(!cfg.script)cfg.script=DEFAULT_SCRIPT_URL;
 
   /* ---------- scale ---------- */
@@ -1881,7 +1912,7 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
     decks[cur.deck].slides.forEach(function(s,i){var b=document.createElement('button');b.innerHTML='<span>'+(i+1)+'</span>'+(s.dataset.title||'');if(i===cur.i)b.className='cur';
       b.onclick=function(){closeAll();render(cur.deck,i,0)};l.appendChild(b)});
     document.getElementById('menuOv').hidden=false;var c=l.querySelector('.cur');if(c)c.scrollIntoView({block:'center'})}
-  var fields={cfgScript:'script',cfgRound:'round',cfgRegister:'register',cfgDates:'dates',cfgTerms:'terms',cfgTechne:'techne'};
+  var fields={cfgScript:'script',cfgRound:'round',cfgOrders:'orders',cfgRegister:'register',cfgDates:'dates',cfgTerms:'terms',cfgTechne:'techne'};
   function openSet(){Object.keys(fields).forEach(function(id){document.getElementById(id).value=cfg[fields[id]]||''});document.getElementById('setOv').hidden=false;document.getElementById('cfgScript').focus()}
   document.getElementById('cfgSave').onclick=function(){Object.keys(fields).forEach(function(id){cfg[fields[id]]=document.getElementById(id).value.trim()});store.set('aicr:cfg',cfg);closeAll();
     var s=decks[cur.deck].slides[cur.i];deactivate(s);activate(s)};
@@ -1917,8 +1948,8 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
   function liveStart(el){
     var qr=el.querySelector('.qr'),url=el.querySelector('.url'),res=el.querySelector('.res');
-    if(el.hasAttribute('data-register')){
-      if(cfg.register){drawQR(qr,cfg.register);url.textContent=cfg.register}else{qr.innerHTML='<p style="font-size:18px;color:var(--muted)">أضف رابط التسجيل من الإعدادات (S)</p>';url.textContent=''}
+    if(el.dataset.link){var lk=cfg[el.dataset.link];
+      if(lk){drawQR(qr,lk);url.textContent=lk}else{qr.innerHTML='<p style="font-size:18px;color:var(--muted)">'+(el.dataset.link==='orders'?'أضف رابط فورم الطلبات':'أضف رابط التسجيل')+' من الإعدادات (S)</p>';url.textContent=''}
       return;
     }
     var id=el.dataset.quiz;
