@@ -521,6 +521,11 @@ button{font:inherit;cursor:pointer}
 .qr img,.qr canvas{width:272px!important;height:272px!important}
 .join .url{font-family:var(--mono);font-size:13px;direction:ltr;word-break:break-all;color:var(--muted);max-height:60px;overflow:hidden}
 .join b{font-family:var(--display);font-size:26px}
+.live.solo{grid-template-columns:1fr;place-items:center}
+.live.solo .join{width:600px;padding:20px 24px 16px;gap:10px}
+.live.solo .qr{width:350px;height:350px}
+.live.solo .qr img,.live.solo .qr canvas{width:322px!important;height:322px!important;image-rendering:pixelated}
+.live.solo .join b{font-size:28px;white-space:nowrap}
 .res{display:flex;flex-direction:column;gap:14px;min-height:0;min-width:0}
 .res .top{display:flex;align-items:center;justify-content:space-between;gap:14px}
 .res .lcount{font-family:var(--display);font-size:28px}
@@ -690,12 +695,7 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
   <div class="s" data-title="الاختبار القبلي" style="--c:var(--purple)">
     <div class="kick"><span class="time">1:00</span><span class="axis">قبل ما نبدأ · الاختبار القبلي</span></div>
     <div class="row" style="justify-content:space-between;align-items:center"><h2>قبل ما نبدأ: إنت واقف فين؟</h2><div class="timer" data-min="7"></div></div>
-    <div class="live" data-link="pre"><div class="join"><div class="qr"></div><b>الاختبار القبلي · 10 أسئلة · 7 دقايق</b><p class="url"></p></div>
-      <div class="res"><div class="kv" style="--t:var(--purple)">
-        <div class="in" style="--d:.1s"><b>مش امتحان</b>مفيش نجاح ولا رسوب. بنعرف نبدأ منين علشان الشرح يناسبك.</div>
-        <div class="in" style="--d:.3s"><b>الكود السري</b>أول حرفين من اسم والدتك + يوم ميلادك (مثال: سا07). افتكره، هتكتبه تاني آخر اليوم التاني.</div>
-        <div class="in" style="--d:.5s"><b>مفيش أسامي ومفيش تخمين</b>لو مش عارف الإجابة اختار «مش عارف». ده بيساعدنا نقيس صح.</div>
-      </div></div>
+    <div class="live solo" data-link="pre"><div class="join"><div class="qr"></div><b>الاختبار القبلي · 10 أسئلة · 7 دقايق</b><p class="url"></p></div>
     </div>
     <aside class="notes">اعرضها أول ما القاعة تكتمل وقبل أي شرح. شغّل المؤقت (T). ما تشرحش أي سؤال وما تقولش الإجابات، حتى لو حد سأل. لو حد ما معاهوش موبايل، يشارك زميله بعد ما زميله يخلص. الأسئلة ودليل التحليل في ملف assessment/pre-post-test.md.</aside>
   </div>
@@ -1795,12 +1795,7 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
   <div class="s" data-title="الاختبار البعدي" style="--c:var(--purple)">
     <div class="kick"><span class="time">4:55</span><span class="axis">الاختبار البعدي</span></div>
     <div class="row" style="justify-content:space-between;align-items:center"><h2>آخر خطوة: شوف اتعلمت قد إيه</h2><div class="timer" data-min="7"></div></div>
-    <div class="live" data-link="post"><div class="join"><div class="qr"></div><b>الاختبار البعدي · 10 أسئلة · 7 دقايق</b><p class="url"></p></div>
-      <div class="res"><div class="kv" style="--t:var(--purple)">
-        <div class="in" style="--d:.1s"><b>نفس أسئلة أول يوم</b>علشان نقيس الفرق بجد: كنت فين، وبقيت فين.</div>
-        <div class="in" style="--d:.3s"><b>نفس الكود السري</b>أول حرفين من اسم والدتك + يوم ميلادك. لازم يكون زي اللي كتبته أول يوم بالظبط.</div>
-        <div class="in" style="--d:.5s"><b>جاوب لوحدك</b>رأيك في الآخر مهم: اكتب أكتر حاجة هتستخدمها فعلًا.</div>
-      </div></div>
+    <div class="live solo" data-link="post"><div class="join"><div class="qr"></div><b>الاختبار البعدي · 10 أسئلة · 7 دقايق</b><p class="url"></p></div>
     </div>
     <aside class="notes">ذكّرهم بطريقة الكود السري بصوت عالي. اعرض على الشاشة مثال: «سا07». النتايج بتربط بالكود، فلو حد كتبه مختلف مش هنعرف نقارنه.</aside>
   </div>
