@@ -1876,7 +1876,7 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
 (function(){
   'use strict';
   /* ضع رابط Apps Script هنا لو عايزه ثابت لكل الأجهزة */
-  var DEFAULT_SCRIPT_URL = '';
+  var DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxPZIa_3E3IZJoVXoNECUNE4lB_ModUxyMydHEepWMGogwCYA9SMqkEs5Ep7mkiUBsY/exec';
 
   var stage=document.getElementById('stage');
   var store={get:function(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set:function(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
