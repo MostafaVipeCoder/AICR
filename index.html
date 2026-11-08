@@ -569,6 +569,8 @@ button{font:inherit;cursor:pointer}
 .panel .acts{display:flex;gap:8px;justify-content:flex-start;flex-wrap:wrap}
 .panel .acts button{font-family:var(--display);border-radius:999px;padding:8px 20px;border:1px solid var(--blue);background:#fff;color:var(--blue)}
 .panel .acts button.solid{background:var(--blue);color:#fff}
+.flash{position:fixed;bottom:84px;left:50%;transform:translateX(-50%);z-index:60;background:var(--ink);color:#fff;font-family:var(--display);font-size:16px;padding:12px 22px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.25);max-width:min(640px,92vw);text-align:center}
+.flash.ok{background:var(--green)}.flash.warn{background:#A26E00}
 .slist{display:grid;gap:4px}
 .slist button{text-align:start;border:0;background:var(--soft);border-radius:10px;padding:8px 14px;font-size:15px;display:flex;gap:12px}
 .slist button span{font-family:var(--mono);color:var(--muted);min-width:2.2ch;direction:ltr}
@@ -1848,13 +1850,14 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
 
 <div class="ov" id="setOv" hidden><div class="panel">
   <h3>الإعدادات</h3>
-  <p>تتحفظ على الجهاز ده بس.</p>
+  <p>بتتحفظ في Google Sheet (تاب «إعدادات العرض») وتظهر على أي جهاز يفتح العرض. لازم كلمة سر المدرب اللي عملتها من قائمة AICR في الشيت.</p>
   <label>رابط Google Apps Script (ينتهي بـ /exec)<input id="cfgScript" placeholder="https://script.google.com/macros/s/.../exec"></label>
   <label>كود المجموعة (يفصل نتايج كل مجموعة عن التانية، مثال: minya-g1)<input id="cfgRound" placeholder="minya-g1"></label>
   <label>رابط فورم الاختبار القبلي (أول اليوم 1)<input id="cfgPre" placeholder="https://forms.gle/..."></label>
   <label>رابط فورم الاختبار البعدي (آخر اليوم 2)<input id="cfgPost" placeholder="https://forms.gle/..."></label>
   <label>رابط فورم فيدباك اليوم 1<input id="cfgFb1" placeholder="https://forms.gle/..."></label>
   <label>رابط فورم فيدباك اليوم 2<input id="cfgFb2" placeholder="https://forms.gle/..."></label>
+  <label>كلمة سر المدرب (بتتحفظ على الجهاز ده بس)<input id="cfgPin" type="password" autocomplete="off"></label>
   <div class="acts"><button class="solid" id="cfgSave">حفظ</button><button data-close>إلغاء</button></div>
 </div></div>
 
@@ -2004,11 +2007,30 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
       b.onclick=function(){closeAll();render(cur.deck,i,0)};l.appendChild(b)});
     document.getElementById('menuOv').hidden=false;var c=l.querySelector('.cur');if(c)c.scrollIntoView({block:'center'})}
   var fields={cfgScript:'script',cfgRound:'round',cfgPre:'pre',cfgPost:'post',cfgFb1:'fb1',cfgFb2:'fb2'};
-  function openSet(){Object.keys(fields).forEach(function(id){document.getElementById(id).value=cfg[fields[id]]||''});document.getElementById('setOv').hidden=false;document.getElementById('cfgScript').focus()}
-  document.getElementById('cfgSave').onclick=function(){Object.keys(fields).forEach(function(id){cfg[fields[id]]=document.getElementById(id).value.trim()});store.set('aicr:cfg',cfg);closeAll();
+  function openSet(){Object.keys(fields).forEach(function(id){document.getElementById(id).value=cfg[fields[id]]||''});document.getElementById('cfgPin').value=store.get('aicr:pin','');document.getElementById('setOv').hidden=false;document.getElementById('cfgScript').focus()}
+  document.getElementById('cfgSave').onclick=function(){Object.keys(fields).forEach(function(id){cfg[fields[id]]=document.getElementById(id).value.trim()});store.set('aicr:cfg',cfg);store.set('aicr:pin',document.getElementById('cfgPin').value.trim());closeAll();pushCfg();
     var s=decks[cur.deck].slides[cur.i];deactivate(s);activate(s)};
   function closeAll(){document.querySelectorAll('.ov').forEach(function(o){o.hidden=true})}
   document.querySelectorAll('.ov').forEach(function(o){o.addEventListener('click',function(e){if(e.target===o||e.target.hasAttribute('data-close'))closeAll()})});
+
+  /* ---------- settings sync (Google Sheet) ---------- */
+  var SYNC_KEYS=['round','pre','post','fb1','fb2'];
+  function flash(msg,kind){var f=document.createElement('div');f.className='flash '+(kind||'');f.textContent=msg;document.body.appendChild(f);setTimeout(function(){f.remove()},5000)}
+  function refreshSlide(){var s=decks[cur.deck]&&decks[cur.deck].slides[cur.i];if(s&&s.classList.contains('on')){deactivate(s);activate(s)}}
+  function pullCfg(){if(!cfg.script)return;
+    fetch(cfg.script+'?action=config').then(function(r){return r.json()}).then(function(j){if(!j||!j.ok||!j.config)return;var ch=false;
+      SYNC_KEYS.forEach(function(k){var v=j.config[k];if(v&&cfg[k]!==v){cfg[k]=v;ch=true}});
+      if(ch){store.set('aicr:cfg',cfg);refreshSlide()}}).catch(function(){})}
+  function pushCfg(){if(!cfg.script){flash('اتحفظت على الجهاز ده بس (مفيش رابط سكريبت).','warn');return}
+    var data={};SYNC_KEYS.forEach(function(k){data[k]=cfg[k]||''});
+    var u=cfg.script+'?action=saveConfig&pin='+encodeURIComponent(store.get('aicr:pin',''))+'&data='+encodeURIComponent(JSON.stringify(data));
+    fetch(u).then(function(r){return r.json()}).then(function(j){
+      if(j&&j.ok)flash('اتحفظت في الشيت ✓ وهتظهر على أي جهاز','ok');
+      else if(j&&j.error==='nopin')flash('اتحفظت على الجهاز ده بس. اعمل كلمة سر من قائمة AICR في الشيت الأول.','warn');
+      else if(j&&j.error==='badpin')flash('كلمة السر غلط. اتحفظت على الجهاز ده بس.','warn');
+      else flash('اتحفظت على الجهاز ده بس. ماقدرتش أحفظ في الشيت.','warn')})
+    .catch(function(){flash('اتحفظت على الجهاز ده بس. حدّث السكريبت (Deploy ← New version) أو افتح العرض من GitHub Pages.','warn')})}
+  pullCfg();
 
   /* ---------- copy ---------- */
   document.addEventListener('click',function(e){

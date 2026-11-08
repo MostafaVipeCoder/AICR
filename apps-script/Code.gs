@@ -72,8 +72,13 @@ function doGet(e) {
   const round = cleanRound_(p.round);
 
   if (p.action === 'results') {
-    return ContentService.createTextOutput(JSON.stringify(getResults(quizId, round)))
-      .setMimeType(ContentService.MimeType.JSON);
+    return json_(getResults(quizId, round));
+  }
+  if (p.action === 'config') {
+    return json_(getConfig_());
+  }
+  if (p.action === 'saveConfig') {
+    return json_(saveConfig_(p));
   }
 
   const isResults = p.page === 'results';
@@ -167,6 +172,95 @@ function publicQuiz_(quizId, withAnswers) {
 
 function cleanRound_(r) {
   return String(r || '').replace(/[^A-Za-z0-9_\-؀-ۿ]/g, '').slice(0, 40);
+}
+
+function json_(o) {
+  return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
+}
+
+/* ---------------- إعدادات العرض (بتتحفظ في الشيت) ---------------- */
+
+const CONFIG_SHEET = 'إعدادات العرض';
+const PIN_PROP = 'AICR_PIN';
+const CONFIG_KEYS = [
+  ['round', 'كود المجموعة (مثال: minya-g1)'],
+  ['pre', 'رابط فورم الاختبار القبلي'],
+  ['post', 'رابط فورم الاختبار البعدي'],
+  ['fb1', 'رابط فورم فيدباك اليوم 1'],
+  ['fb2', 'رابط فورم فيدباك اليوم 2']
+];
+
+function readConfig_(sh) {
+  const out = {};
+  if (!sh || sh.getLastRow() < 2) return out;
+  sh.getRange(2, 1, sh.getLastRow() - 1, 2).getValues().forEach(function (r) {
+    if (r[0]) out[String(r[0]).trim()] = String(r[1] || '').trim();
+  });
+  return out;
+}
+
+function buildConfig_(ss) {
+  let sh = ss.getSheetByName(CONFIG_SHEET);
+  const old = readConfig_(sh);
+  if (!sh) sh = ss.insertSheet(CONFIG_SHEET);
+  sh.clear();
+  sh.setRightToLeft(true);
+  sh.getRange(1, 1, 1, 3).setValues([['المفتاح', 'القيمة', 'ده إيه']])
+    .setFontWeight('bold').setBackground(BRAND.blue).setFontColor('#FFFFFF');
+  CONFIG_KEYS.forEach(function (k, i) {
+    sh.getRange(i + 2, 1, 1, 3).setValues([[k[0], old[k[0]] || '', k[1]]]);
+  });
+  sh.getRange(2, 1, CONFIG_KEYS.length, 1).setFontColor('#8A90A6');
+  sh.getRange(2, 2, CONFIG_KEYS.length, 1).setBackground('#FFF4D9').setNumberFormat('@');
+  sh.setColumnWidth(1, 90); sh.setColumnWidth(2, 420); sh.setColumnWidth(3, 260);
+  sh.setFrozenRows(1);
+  sh.getRange(CONFIG_KEYS.length + 3, 1).setValue('العرض بيقرا القيم الصفرا دي لوحده. تقدر تعدّلها هنا، أو من إعدادات العرض (S) بكلمة سر المدرب.')
+    .setFontColor('#596182');
+  return sh;
+}
+
+function getConfig_() {
+  const c = readConfig_(ss_().getSheetByName(CONFIG_SHEET));
+  const out = {};
+  CONFIG_KEYS.forEach(function (k) { out[k[0]] = c[k[0]] || ''; });
+  return { ok: true, config: out };
+}
+
+function saveConfig_(p) {
+  const pin = PropertiesService.getScriptProperties().getProperty(PIN_PROP);
+  if (!pin) return { ok: false, error: 'nopin' };
+  if (String(p.pin || '') !== pin) return { ok: false, error: 'badpin' };
+  let data;
+  try { data = JSON.parse(p.data || '{}'); } catch (err) { return { ok: false, error: 'baddata' }; }
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const ss = ss_();
+    const sh = ss.getSheetByName(CONFIG_SHEET) || buildConfig_(ss);
+    const keys = sh.getRange(2, 1, Math.max(sh.getLastRow() - 1, 1), 1).getValues().map(function (r) { return String(r[0]).trim(); });
+    CONFIG_KEYS.forEach(function (k) {
+      if (!(k[0] in data)) return;
+      let v = String(data[k[0]] || '').trim().slice(0, 500);
+      if (k[0] === 'round') v = cleanRound_(v);
+      else if (v && !/^https?:\/\//i.test(v)) return; // روابط بس
+      const i = keys.indexOf(k[0]);
+      if (i >= 0) sh.getRange(i + 2, 2).setValue(v);
+    });
+  } finally {
+    lock.releaseLock();
+  }
+  return getConfig_();
+}
+
+/** من قائمة AICR: كلمة سر المدرب اللي بتسمح بحفظ الإعدادات من العرض */
+function setPin() {
+  const ui = SpreadsheetApp.getUi();
+  const r = ui.prompt('كلمة سر المدرب', 'اكتب كلمة سر (4 حروف أو أرقام على الأقل). هتكتبها في إعدادات العرض (S) علشان اللينكات تتحفظ هنا.', ui.ButtonSet.OK_CANCEL);
+  if (r.getSelectedButton() !== ui.Button.OK) return;
+  const v = r.getResponseText().trim();
+  if (v.length < 4) { ui.alert('كلمة السر لازم تكون 4 حروف أو أرقام على الأقل.'); return; }
+  PropertiesService.getScriptProperties().setProperty(PIN_PROP, v);
+  ui.alert('اتحفظت كلمة السر ✓');
 }
 
 /* ---------------- spreadsheet & tabs ---------------- */
@@ -307,6 +401,7 @@ function setup() {
   sheet_();
   Object.keys(QUIZZES).forEach(function (id) { buildSummary_(ss, id); });
   buildLinks_(ss);
+  buildConfig_(ss);
   // شيل التاب الفاضي الافتراضي لو موجود
   ['Sheet1', 'ورقة1', 'الورقة1'].forEach(function (n) {
     const s = ss.getSheetByName(n);
@@ -325,5 +420,6 @@ function onOpen() {
   SpreadsheetApp.getUi().createMenu('AICR')
     .addItem('تجهيز الشيت (التابات والجداول)', 'setup')
     .addItem('تحديث الروابط بعد الـ Deploy', 'refreshLinks')
+    .addItem('كلمة سر المدرب (لحفظ إعدادات العرض)', 'setPin')
     .addToUi();
 }
