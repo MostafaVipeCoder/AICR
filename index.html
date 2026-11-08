@@ -696,6 +696,19 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
     <aside class="notes">رحّب بالمشاركين. وضّح أن اليوم عملي بالكامل: كل واحد هيخرج بأربع حاجات عملها بإيده.</aside>
   </div>
 
+  <div class="s" data-title="الاختبار القبلي" style="--c:var(--purple)">
+    <div class="kick"><span class="time">1:00</span><span class="axis">قبل ما نبدأ · الاختبار القبلي</span></div>
+    <div class="row" style="justify-content:space-between;align-items:center"><h2>قبل ما نبدأ: إنت واقف فين؟</h2><div class="timer" data-min="10"></div></div>
+    <div class="live" data-link="pre"><div class="join"><div class="qr"></div><b>الاختبار القبلي · 10 دقايق</b><p class="url"></p></div>
+      <div class="res"><div class="kv" style="--t:var(--purple)">
+        <div class="in" style="--d:.1s"><b>مش امتحان</b>مفيش نجاح ولا رسوب. بنعرف نبدأ منين علشان الشرح يناسبك.</div>
+        <div class="in" style="--d:.3s"><b>الكود السري</b>أول حرفين من اسم والدتك + يوم ميلادك (مثال: سا07). افتكره، هتكتبه تاني آخر اليوم التاني.</div>
+        <div class="in" style="--d:.5s"><b>مفيش أسامي ومفيش تخمين</b>لو مش عارف الإجابة اختار «مش عارف». ده بيساعدنا نقيس صح.</div>
+      </div></div>
+    </div>
+    <aside class="notes">اعرضها أول ما القاعة تكتمل وقبل أي شرح. شغّل المؤقت (T). ما تشرحش أي سؤال وما تقولش الإجابات، حتى لو حد سأل. لو حد ما معاهوش موبايل، يشارك زميله بعد ما زميله يخلص. الأسئلة ودليل التحليل في ملف assessment/pre-post-test.md.</aside>
+  </div>
+
   <div class="s" data-title="هنطلع النهارده بإيه؟">
     <h2 class="in">النهارده هتخرج بـ 4 حاجات عملتها بإيدك</h2>
     <div class="cards grow" style="--n:4">
@@ -1804,6 +1817,19 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
     <div class="live" data-quiz="d2-exit"><div class="join"><div class="qr"></div><b>امسح الكود · بدون اسم</b><p class="url"></p></div><div class="res"></div></div>
   </div>
 
+  <div class="s" data-title="الاختبار البعدي" style="--c:var(--purple)">
+    <div class="kick"><span class="time">4:55</span><span class="axis">الاختبار البعدي</span></div>
+    <div class="row" style="justify-content:space-between;align-items:center"><h2>آخر خطوة: شوف اتعلمت قد إيه</h2><div class="timer" data-min="10"></div></div>
+    <div class="live" data-link="post"><div class="join"><div class="qr"></div><b>الاختبار البعدي · 10 دقايق</b><p class="url"></p></div>
+      <div class="res"><div class="kv" style="--t:var(--purple)">
+        <div class="in" style="--d:.1s"><b>نفس أسئلة أول يوم</b>علشان نقيس الفرق بجد: كنت فين، وبقيت فين.</div>
+        <div class="in" style="--d:.3s"><b>نفس الكود السري</b>أول حرفين من اسم والدتك + يوم ميلادك. لازم يكون زي اللي كتبته أول يوم بالظبط.</div>
+        <div class="in" style="--d:.5s"><b>جاوب لوحدك</b>رأيك في الآخر مهم: اكتب أكتر حاجة هتستخدمها فعلًا.</div>
+      </div></div>
+    </div>
+    <aside class="notes">ذكّرهم بطريقة الكود السري بصوت عالي. اعرض على الشاشة مثال: «سا07». النتايج بتربط بالكود، فلو حد كتبه مختلف مش هنعرف نقارنه.</aside>
+  </div>
+
   <div class="s cover" data-title="الخطوة التالية">
     <div class="band"></div>
     <div class="arcs"></div>
@@ -1840,6 +1866,8 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
   <p>تتحفظ على الجهاز ده بس.</p>
   <label>رابط Google Apps Script (ينتهي بـ /exec)<input id="cfgScript" placeholder="https://script.google.com/macros/s/.../exec"></label>
   <label>كود المجموعة (يفصل نتايج كل مجموعة عن التانية، مثال: minya-g1)<input id="cfgRound" placeholder="minya-g1"></label>
+  <label>رابط فورم الاختبار القبلي (أول اليوم 1)<input id="cfgPre" placeholder="https://forms.gle/..."></label>
+  <label>رابط فورم الاختبار البعدي (آخر اليوم 2)<input id="cfgPost" placeholder="https://forms.gle/..."></label>
   <label>شروط Techne وآلية التقديم<input id="cfgTechne" style="direction:rtl;font-family:var(--body)"></label>
   <div class="acts"><button class="solid" id="cfgSave">حفظ</button><button data-close>إلغاء</button></div>
 </div></div>
@@ -1852,7 +1880,7 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
 
   var stage=document.getElementById('stage');
   var store={get:function(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set:function(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-  var cfg=Object.assign({script:DEFAULT_SCRIPT_URL,round:'',techne:''},store.get('aicr:cfg',{}));
+  var cfg=Object.assign({script:DEFAULT_SCRIPT_URL,round:'',pre:'',post:'',techne:''},store.get('aicr:cfg',{}));
   if(!cfg.script)cfg.script=DEFAULT_SCRIPT_URL;
 
   /* ---------- scale ---------- */
@@ -1989,7 +2017,7 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
     decks[cur.deck].slides.forEach(function(s,i){var b=document.createElement('button');b.innerHTML='<span>'+(i+1)+'</span>'+(s.dataset.title||'');if(i===cur.i)b.className='cur';
       b.onclick=function(){closeAll();render(cur.deck,i,0)};l.appendChild(b)});
     document.getElementById('menuOv').hidden=false;var c=l.querySelector('.cur');if(c)c.scrollIntoView({block:'center'})}
-  var fields={cfgScript:'script',cfgRound:'round',cfgTechne:'techne'};
+  var fields={cfgScript:'script',cfgRound:'round',cfgPre:'pre',cfgPost:'post',cfgTechne:'techne'};
   function openSet(){Object.keys(fields).forEach(function(id){document.getElementById(id).value=cfg[fields[id]]||''});document.getElementById('setOv').hidden=false;document.getElementById('cfgScript').focus()}
   document.getElementById('cfgSave').onclick=function(){Object.keys(fields).forEach(function(id){cfg[fields[id]]=document.getElementById(id).value.trim()});store.set('aicr:cfg',cfg);closeAll();
     var s=decks[cur.deck].slides[cur.i];deactivate(s);activate(s)};
