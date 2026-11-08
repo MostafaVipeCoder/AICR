@@ -1265,6 +1265,14 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
     <aside class="notes">اترك دقيقتين للإجابة، ثم اضغط «إظهار الإجابات» وناقش أكثر سؤال حصل فيه خطأ.</aside>
   </div>
 
+  <div class="s" data-title="فيدباك اليوم الأول" style="--c:var(--magenta)">
+    <div class="kick"><span class="time">4:55</span><span class="axis">رأيك</span></div>
+    <div class="row" style="justify-content:space-between;align-items:center"><h2>رأيك في النهارده يفرق معانا</h2><div class="timer" data-min="3"></div></div>
+    <div class="live solo" data-link="fb1"><div class="join"><div class="qr"></div><b>فيدباك اليوم الأول · دقيقتين</b><p class="url"></p></div>
+    </div>
+    <aside class="notes">اطلب منهم يكتبوا رأيهم بصراحة: إيه اللي عجبهم، وإيه اللي محتاج يتحسن. ذكّرهم إن الفورم من غير أسامي.</aside>
+  </div>
+
   <div class="s cover" data-title="الخطوة التالية">
     <div class="band"></div>
     <div class="inner">
@@ -1800,6 +1808,14 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
     <aside class="notes">ذكّرهم بطريقة الكود السري بصوت عالي. اعرض على الشاشة مثال: «سا07». النتايج بتربط بالكود، فلو حد كتبه مختلف مش هنعرف نقارنه.</aside>
   </div>
 
+  <div class="s" data-title="فيدباك اليوم التاني" style="--c:var(--magenta)">
+    <div class="kick"><span class="time">5:00</span><span class="axis">رأيك</span></div>
+    <div class="row" style="justify-content:space-between;align-items:center"><h2>رأيك في النهارده يفرق معانا</h2><div class="timer" data-min="3"></div></div>
+    <div class="live solo" data-link="fb2"><div class="join"><div class="qr"></div><b>فيدباك اليوم التاني · دقيقتين</b><p class="url"></p></div>
+    </div>
+    <aside class="notes">اطلب منهم يكتبوا رأيهم بصراحة: إيه اللي عجبهم، وإيه اللي محتاج يتحسن. ذكّرهم إن الفورم من غير أسامي.</aside>
+  </div>
+
   <div class="s cover" data-title="الخطوة التالية">
     <div class="band"></div>
     <div class="inner">
@@ -1837,6 +1853,8 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
   <label>كود المجموعة (يفصل نتايج كل مجموعة عن التانية، مثال: minya-g1)<input id="cfgRound" placeholder="minya-g1"></label>
   <label>رابط فورم الاختبار القبلي (أول اليوم 1)<input id="cfgPre" placeholder="https://forms.gle/..."></label>
   <label>رابط فورم الاختبار البعدي (آخر اليوم 2)<input id="cfgPost" placeholder="https://forms.gle/..."></label>
+  <label>رابط فورم فيدباك اليوم 1<input id="cfgFb1" placeholder="https://forms.gle/..."></label>
+  <label>رابط فورم فيدباك اليوم 2<input id="cfgFb2" placeholder="https://forms.gle/..."></label>
   <div class="acts"><button class="solid" id="cfgSave">حفظ</button><button data-close>إلغاء</button></div>
 </div></div>
 
@@ -1848,7 +1866,7 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
 
   var stage=document.getElementById('stage');
   var store={get:function(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set:function(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-  var cfg=Object.assign({script:DEFAULT_SCRIPT_URL,round:'',pre:'',post:''},store.get('aicr:cfg',{}));
+  var cfg=Object.assign({script:DEFAULT_SCRIPT_URL,round:'',pre:'',post:'',fb1:'',fb2:''},store.get('aicr:cfg',{}));
   if(!cfg.script)cfg.script=DEFAULT_SCRIPT_URL;
 
   /* ---------- scale ---------- */
@@ -1985,7 +2003,7 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
     decks[cur.deck].slides.forEach(function(s,i){var b=document.createElement('button');b.innerHTML='<span>'+(i+1)+'</span>'+(s.dataset.title||'');if(i===cur.i)b.className='cur';
       b.onclick=function(){closeAll();render(cur.deck,i,0)};l.appendChild(b)});
     document.getElementById('menuOv').hidden=false;var c=l.querySelector('.cur');if(c)c.scrollIntoView({block:'center'})}
-  var fields={cfgScript:'script',cfgRound:'round',cfgPre:'pre',cfgPost:'post'};
+  var fields={cfgScript:'script',cfgRound:'round',cfgPre:'pre',cfgPost:'post',cfgFb1:'fb1',cfgFb2:'fb2'};
   function openSet(){Object.keys(fields).forEach(function(id){document.getElementById(id).value=cfg[fields[id]]||''});document.getElementById('setOv').hidden=false;document.getElementById('cfgScript').focus()}
   document.getElementById('cfgSave').onclick=function(){Object.keys(fields).forEach(function(id){cfg[fields[id]]=document.getElementById(id).value.trim()});store.set('aicr:cfg',cfg);closeAll();
     var s=decks[cur.deck].slides[cur.i];deactivate(s);activate(s)};
