@@ -1790,9 +1790,8 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
       </div>
       <div class="col" style="flex:1">
         <div class="kv" style="--t:var(--purple)">
-          <div class="in" style="--d:.3s"><b>الشروط وآلية التقديم</b><span data-cfg="techne">يضيفها المدرب من الإعدادات</span></div>
-          <div class="in" style="--d:.45s"><b>فرص ريادة الأعمال في كرياتيفا</b>برامج دعم أصحاب الأفكار والمشروعات الناشئة</div>
-          <div class="in" style="--d:.6s"><b>مركز الإبداع التكنولوجي وريادة الأعمال TIEC</b>تابع لـ ITIDA، وبيقدم برامج لدعم رواد الأعمال في التكنولوجيا</div>
+          <div class="in" style="--d:.3s"><b>فرص ريادة الأعمال في كرياتيفا</b>برامج دعم أصحاب الأفكار والمشروعات الناشئة</div>
+          <div class="in" style="--d:.45s"><b>مركز الإبداع التكنولوجي وريادة الأعمال TIEC</b>تابع لـ ITIDA، وبيقدم برامج لدعم رواد الأعمال في التكنولوجيا</div>
         </div>
         <div class="call safe in" style="--d:.8s"><svg class="ic"><use href="#i-alert"/></svg><div>الجوائز ليها شروط واختيار تنافسي. المشاركة مش ضمان للفوز أو التمويل، والجلسة دي للتعريف مش برنامج احتضان.</div></div>
       </div>
@@ -1868,7 +1867,6 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
   <label>كود المجموعة (يفصل نتايج كل مجموعة عن التانية، مثال: minya-g1)<input id="cfgRound" placeholder="minya-g1"></label>
   <label>رابط فورم الاختبار القبلي (أول اليوم 1)<input id="cfgPre" placeholder="https://forms.gle/..."></label>
   <label>رابط فورم الاختبار البعدي (آخر اليوم 2)<input id="cfgPost" placeholder="https://forms.gle/..."></label>
-  <label>شروط Techne وآلية التقديم<input id="cfgTechne" style="direction:rtl;font-family:var(--body)"></label>
   <div class="acts"><button class="solid" id="cfgSave">حفظ</button><button data-close>إلغاء</button></div>
 </div></div>
 
@@ -1880,7 +1878,7 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
 
   var stage=document.getElementById('stage');
   var store={get:function(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set:function(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-  var cfg=Object.assign({script:DEFAULT_SCRIPT_URL,round:'',pre:'',post:'',techne:''},store.get('aicr:cfg',{}));
+  var cfg=Object.assign({script:DEFAULT_SCRIPT_URL,round:'',pre:'',post:''},store.get('aicr:cfg',{}));
   if(!cfg.script)cfg.script=DEFAULT_SCRIPT_URL;
 
   /* ---------- scale ---------- */
@@ -2017,7 +2015,7 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
     decks[cur.deck].slides.forEach(function(s,i){var b=document.createElement('button');b.innerHTML='<span>'+(i+1)+'</span>'+(s.dataset.title||'');if(i===cur.i)b.className='cur';
       b.onclick=function(){closeAll();render(cur.deck,i,0)};l.appendChild(b)});
     document.getElementById('menuOv').hidden=false;var c=l.querySelector('.cur');if(c)c.scrollIntoView({block:'center'})}
-  var fields={cfgScript:'script',cfgRound:'round',cfgPre:'pre',cfgPost:'post',cfgTechne:'techne'};
+  var fields={cfgScript:'script',cfgRound:'round',cfgPre:'pre',cfgPost:'post'};
   function openSet(){Object.keys(fields).forEach(function(id){document.getElementById(id).value=cfg[fields[id]]||''});document.getElementById('setOv').hidden=false;document.getElementById('cfgScript').focus()}
   document.getElementById('cfgSave').onclick=function(){Object.keys(fields).forEach(function(id){cfg[fields[id]]=document.getElementById(id).value.trim()});store.set('aicr:cfg',cfg);closeAll();
     var s=decks[cur.deck].slides[cur.i];deactivate(s);activate(s)};
