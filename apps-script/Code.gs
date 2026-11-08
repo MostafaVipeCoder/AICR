@@ -41,17 +41,6 @@ const QUIZZES = {
         why: 'الأتمتة = حدث يحصل فيتنفذ إجراء لوحده.' }
     ]
   },
-  'd2-tracks': {
-    title: 'أي تراك أقرب لك؟',
-    type: 'poll',
-    tally: ['Product Builder', 'Marketer', 'Creative', 'AI Automation & Data'],
-    questions: [
-      { q: 'أنهي تطبيق كان الأمتع ليك؟', options: ['النموذج الأولي للمنتج', 'حزمة المحتوى التسويقي', 'بوست التصميم', 'جدول الطلبات والمعادلات'] },
-      { q: 'في وقت فراغك بتحب…', options: ['أجرب تطبيقات وأفكر اتعملت إزاي', 'أتابع صفحات وأحلل ليه بوست نجح', 'أصور وأعدل صور وفيديوهات', 'أنظم حاجات في جداول وقوائم'] },
-      { q: 'لو صاحبك عنده محل، هتساعده إزاي؟', options: ['أعمله موقع أو تطبيق طلبات', 'أدير صفحته وأعمله محتوى', 'أصمم له لوجو وبوستات', 'أنظم له الطلبات والحسابات لوحدها'] },
-      { q: 'أنهي مخرج نهائي يفرحك أكتر؟', options: ['منتج منشور برابط الناس بتستخدمه', 'صفحة بتكبر وأرقام بتتحسن', 'Portfolio تصميمات وفيديوهات', 'نظام شغال بيوفر ساعات شغل'] }
-    ]
-  },
   'd2-exit': {
     title: 'اختبار ختام اليوم الثاني',
     type: 'quiz',
@@ -156,11 +145,6 @@ function getResults(quizId, round) {
   }
 
   const out = { ok: true, quiz: publicQuiz_(quizId, true), total: total, counts: counts, round: round };
-  if (quiz.tally) {
-    out.tally = quiz.tally.map(function (_, ti) {
-      return counts.reduce(function (s, c) { return s + (c[ti] || 0); }, 0);
-    });
-  }
   return out;
 }
 
@@ -173,7 +157,6 @@ function publicQuiz_(quizId, withAnswers) {
     id: quizId,
     title: quiz.title,
     type: quiz.type,
-    tally: quiz.tally || null,
     questions: quiz.questions.map(function (q) {
       const o = { q: q.q, options: q.options };
       if (withAnswers && typeof q.answer === 'number') o.answer = q.answer;
@@ -275,25 +258,6 @@ function buildSummary_(ss, quizId) {
     r = first + q.options.length + 1;
   });
 
-  if (quiz.tally) {
-    sh.getRange(r, 1, 1, 4).setValues([['توزيع القاعة على التراكات', 'العدد', 'النسبة', 'رسم']])
-      .setFontWeight('bold').setBackground(BRAND.magenta).setFontColor('#FFFFFF');
-    const first = r + 1;
-    const total = '(' + quiz.questions.length + '*MAX(1,$B$3))';
-    quiz.tally.forEach(function (t, ti) {
-      const row = first + ti;
-      // كل سؤال: الاختيار رقم ti بيروح للتراك ti
-      const parts = [];
-      for (let qi = 0; qi < quiz.questions.length; qi++) {
-        const rowInQ = 5 + 1 + ti + qi * (quiz.questions[0].options.length + 2);
-        parts.push('B' + rowInQ);
-      }
-      sh.getRange(row, 1).setValue(t);
-      sh.getRange(row, 2).setFormula('=' + parts.join('+')).setHorizontalAlignment('center');
-      sh.getRange(row, 3).setFormula('=B' + row + '/' + total).setNumberFormat('0%').setHorizontalAlignment('center');
-      sh.getRange(row, 4).setFormula('=SPARKLINE(B' + row + ',{"charttype","bar";"max",MAX(1,' + total + ');"color1","' + BRAND.magenta + '"})');
-    });
-  }
   sh.setFrozenRows(3);
   return sh;
 }

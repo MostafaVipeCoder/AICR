@@ -32,8 +32,6 @@
   .row b{font-family:"IBM Plex Mono",monospace;font-size:20px;text-align:left}
   .reveal .row.correct .bt i{background:var(--green)}
   .reveal .row.correct .bt span{color:#fff;font-weight:600}
-  .tally .bt{height:64px}.tally .bt span{line-height:64px;font-size:26px;font-family:Alexandria,sans-serif;direction:ltr;text-align:right}
-  .tally .bt i{background:var(--blue)}
   .msg{background:#FFF4D9;border-radius:16px;padding:16px}
 </style>
 </head>
@@ -77,15 +75,10 @@
   function draw(j){
     if(!j||!j.ok) return;
     document.getElementById('total').textContent=j.total;
-    var h='';
-    if(j.tally){
-      var mx=Math.max.apply(null,j.tally.concat([1]));
-      h='<div class="tally">'+j.quiz.tally.map(function(n,i){return '<div class="row"><div class="bt"><i style="width:'+(j.tally[i]/mx*100)+'%"></i><span>'+esc(n)+'</span></div><b>'+j.tally[i]+'</b></div>';}).join('')+'</div>';
-    } else {
-      h='<div class="grid">'+j.quiz.questions.map(function(q,qi){var c=j.counts[qi];var mx=Math.max.apply(null,c.concat([1]));
+    var h;
+    h='<div class="grid">'+j.quiz.questions.map(function(q,qi){var c=j.counts[qi];var mx=Math.max.apply(null,c.concat([1]));
         return '<div class="qb"><h3>'+(qi+1)+'. '+esc(q.q)+'</h3>'+q.options.map(function(o,oi){
           return '<div class="row'+(q.answer===oi?' correct':'')+'"><div class="bt"><i style="width:'+(c[oi]/mx*100)+'%"></i><span>'+esc(o)+'</span></div><b>'+c[oi]+'</b></div>';}).join('')+'</div>';}).join('')+'</div>';
-    }
     document.getElementById('body').innerHTML=h;
   }
 </script>

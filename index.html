@@ -1840,9 +1840,6 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
   <p>تتحفظ على الجهاز ده بس.</p>
   <label>رابط Google Apps Script (ينتهي بـ /exec)<input id="cfgScript" placeholder="https://script.google.com/macros/s/.../exec"></label>
   <label>كود المجموعة (يفصل نتايج كل مجموعة عن التانية، مثال: minya-g1)<input id="cfgRound" placeholder="minya-g1"></label>
-  <label>رابط التسجيل في التراكات<input id="cfgRegister" placeholder="https://..."></label>
-  <label>مواعيد التراكات<input id="cfgDates" style="direction:rtl;font-family:var(--body)"></label>
-  <label>شروط الالتحاق<input id="cfgTerms" style="direction:rtl;font-family:var(--body)"></label>
   <label>شروط Techne وآلية التقديم<input id="cfgTechne" style="direction:rtl;font-family:var(--body)"></label>
   <div class="acts"><button class="solid" id="cfgSave">حفظ</button><button data-close>إلغاء</button></div>
 </div></div>
@@ -1855,7 +1852,7 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
 
   var stage=document.getElementById('stage');
   var store={get:function(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set:function(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-  var cfg=Object.assign({script:DEFAULT_SCRIPT_URL,round:'',register:'',dates:'',terms:'',techne:''},store.get('aicr:cfg',{}));
+  var cfg=Object.assign({script:DEFAULT_SCRIPT_URL,round:'',techne:''},store.get('aicr:cfg',{}));
   if(!cfg.script)cfg.script=DEFAULT_SCRIPT_URL;
 
   /* ---------- scale ---------- */
@@ -1992,7 +1989,7 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
     decks[cur.deck].slides.forEach(function(s,i){var b=document.createElement('button');b.innerHTML='<span>'+(i+1)+'</span>'+(s.dataset.title||'');if(i===cur.i)b.className='cur';
       b.onclick=function(){closeAll();render(cur.deck,i,0)};l.appendChild(b)});
     document.getElementById('menuOv').hidden=false;var c=l.querySelector('.cur');if(c)c.scrollIntoView({block:'center'})}
-  var fields={cfgScript:'script',cfgRound:'round',cfgRegister:'register',cfgDates:'dates',cfgTerms:'terms',cfgTechne:'techne'};
+  var fields={cfgScript:'script',cfgRound:'round',cfgTechne:'techne'};
   function openSet(){Object.keys(fields).forEach(function(id){document.getElementById(id).value=cfg[fields[id]]||''});document.getElementById('setOv').hidden=false;document.getElementById('cfgScript').focus()}
   document.getElementById('cfgSave').onclick=function(){Object.keys(fields).forEach(function(id){cfg[fields[id]]=document.getElementById(id).value.trim()});store.set('aicr:cfg',cfg);closeAll();
     var s=decks[cur.deck].slides[cur.i];deactivate(s);activate(s)};
