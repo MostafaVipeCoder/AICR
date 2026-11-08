@@ -2021,6 +2021,12 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
   document.querySelectorAll('.ptabs button').forEach(function(b){b.onclick=function(){showTab(b.closest('.s'),+b.dataset.tab)}});
 
   /* ---------- timers ---------- */
+  var actx=null;
+  function audio(){try{if(!actx)actx=new (window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended')actx.resume()}catch(e){}return actx}
+  function beep(freq,dur,vol){var a=audio();if(!a)return;try{var o=a.createOscillator(),g=a.createGain(),n=a.currentTime;
+    o.type='sine';o.frequency.value=freq;g.gain.setValueAtTime(0.0001,n);g.gain.exponentialRampToValueAtTime(vol||0.5,n+0.02);g.gain.exponentialRampToValueAtTime(0.0001,n+dur);
+    o.connect(g);g.connect(a.destination);o.start(n);o.stop(n+dur+0.05)}catch(e){}}
+  function timerSound(left){if(left>0&&left<=5)beep(880,0.18,0.45);else if(left===0){beep(660,0.9,0.6);setTimeout(function(){beep(990,0.9,0.6)},250)}}
   document.querySelectorAll('.timer').forEach(function(t){
     var total=+t.dataset.min*60,left=total,iv=null;
     t.innerHTML='<button class="t-play" title="تشغيل/إيقاف (T)"><svg class="ic"><use href="#i-play"/></svg></button><span class="t-val"></span><button class="t-reset" title="إعادة"><svg class="ic"><use href="#i-refresh"/></svg></button>';
@@ -2028,7 +2034,7 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
     function show(){var a=Math.abs(left);val.textContent=(left<0?'-':'')+String(Math.floor(a/60)).padStart(2,'0')+':'+String(a%60).padStart(2,'0');
       t.classList.toggle('low',left<=60&&left>0&&!!iv);t.classList.toggle('over',left<=0)}
     function toggle(){if(iv){clearInterval(iv);iv=null;t.classList.remove('run');play.innerHTML='<svg class="ic"><use href="#i-play"/></svg>'}
-      else{iv=setInterval(function(){left--;show()},1000);t.classList.add('run');play.innerHTML='<svg class="ic"><use href="#i-pause"/></svg>'}show()}
+      else{audio();iv=setInterval(function(){left--;timerSound(left);show()},1000);t.classList.add('run');play.innerHTML='<svg class="ic"><use href="#i-pause"/></svg>'}show()}
     play.onclick=toggle;t.querySelector('.t-reset').onclick=function(){if(iv)toggle();left=total;show()};t._toggle=toggle;show();
   });
 
