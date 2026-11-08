@@ -358,6 +358,39 @@ button{font:inherit;cursor:pointer}
 .pipe.m4 .pnode .bub{width:80px;height:80px}
 .pipe.m4 .pnode b{font-size:24px}
 .pipe.m4 .pnode p{font-size:19px}
+/* make steps */
+.mk{display:grid;grid-template-columns:minmax(0,1fr) 800px;gap:40px;flex:1;min-height:0;margin-top:6px}
+.mks{display:grid;gap:12px;align-content:start;counter-reset:k;margin:0;padding:0}
+.mks li{list-style:none;display:grid;grid-template-columns:46px 1fr;gap:14px;align-items:start;font-size:21px;line-height:1.5}
+.mks li::before{counter-increment:k;content:counter(k);width:46px;height:46px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:22px}
+.mks b{font-family:var(--display);font-weight:600}
+.mks code,.mapc code{font-family:var(--mono);font-size:17px;background:var(--soft);border:1px solid var(--line);padding:0 8px;border-radius:6px;direction:ltr;display:inline-block;unicode-bidi:isolate;line-height:1.6}
+.mks .pill,.mapc .pill{background:#E3F4EA;color:#0F7A43;border-radius:8px;padding:0 10px;font-weight:600;display:inline-block}
+.mkc{background:#F7F8FC radial-gradient(#D5DAE8 1.5px,transparent 1.6px) 0 0/22px 22px;border-radius:28px;border:2px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:18px;min-height:0}
+.mrow{display:flex;align-items:center}
+.mod{display:grid;justify-items:center;gap:8px;text-align:center;flex:none}
+.mod .o{width:124px;height:124px;border-radius:50%;background:var(--m);color:#fff;display:grid;place-items:center;box-shadow:0 10px 24px rgba(18,25,51,.18);position:relative}
+.mod .o .ic{width:58px;height:58px}
+.mod .o em{position:absolute;top:-6px;left:-6px;min-width:40px;height:40px;border-radius:20px;background:#fff;color:var(--ink);font:600 21px var(--mono);font-style:normal;display:grid;place-items:center;box-shadow:0 4px 10px rgba(18,25,51,.2)}
+.mod b{font-family:var(--display);font-size:22px;direction:ltr}
+.mod span{font-size:17px;color:var(--muted);direction:ltr}
+.mlink{width:170px;border-top:5px dotted #AEB8D4;position:relative;margin:0 6px 64px}
+.mlink .flt{position:absolute;left:50%;top:-30px;transform:translateX(-50%);width:54px;height:54px;border-radius:50%;background:#fff;border:3px solid var(--c);color:var(--c);display:grid;place-items:center}
+.mlink .flt .ic{width:28px;height:28px}
+.mlink .flt small{position:absolute;top:58px;white-space:nowrap;font-size:16px;font-family:var(--display);color:var(--c)}
+.mapc{background:#fff;border-radius:18px;border:2px solid var(--line);padding:14px 18px;display:grid;gap:8px;font-size:19px;width:100%;max-width:560px}
+.mapc div{display:grid;grid-template-columns:96px 1fr;gap:10px;align-items:center}
+.mapc div>span:first-child{font-family:var(--mono);font-size:16px;color:var(--muted);direction:ltr;text-align:left}
+.fm{background:#fff;border-radius:18px;border-top:12px solid #7248B9;box-shadow:0 10px 24px rgba(18,25,51,.12);padding:12px 22px;width:400px;display:grid;gap:5px}
+.fm h4{font-family:var(--display);font-size:20px}
+.fm div{font-size:16px;color:var(--muted);border-bottom:2px solid var(--line);padding-bottom:2px;display:flex;justify-content:space-between}
+.fm div i{font-style:normal;color:var(--magenta);font-size:15px}
+.shm{background:#fff;border-radius:14px;border-top:10px solid #0F9D58;box-shadow:0 10px 24px rgba(18,25,51,.12);width:400px;overflow:hidden}
+.shm h5{font-family:var(--mono);font-size:15px;color:#0F7A43;padding:6px 14px;direction:ltr;text-align:left;background:#F1FAF4}
+.shm p{display:grid;grid-template-columns:repeat(4,1fr);font-size:15px;margin:0}
+.shm p span{padding:5px 8px;border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.shm p.h span{font-weight:700;background:var(--soft)}
+.darr{width:5px;height:22px;background:repeating-linear-gradient(180deg,#AEB8D4 0 6px,transparent 6px 11px)}
 .dtable{flex:1;border-radius:18px;overflow:hidden;border:2px solid var(--line);align-self:start;min-width:0}
 .dtable .tr{display:grid;grid-template-columns:1.1fr 1fr .8fr .6fr .8fr 1fr;font-size:20px}
 .dtable .tr span{padding:9px 12px;border-bottom:1px solid var(--line)}
@@ -1099,9 +1132,9 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
       <div class="pwire"></div>
       <div class="pnode in" style="--d:.3s"><div class="bub"><svg class="ic"><use href="#i-table"/></svg></div><b>Google Sheets</b><p>الطلب يتسجل صف</p></div>
       <div class="pwire" style="--x:1"></div>
-      <div class="pnode in" style="--d:.6s"><div class="bub"><svg class="ic"><use href="#i-truck"/></svg></div><b>فلتر</b><p>لو توصيل: يروح لقائمة المندوب</p></div>
+      <div class="pnode in" style="--d:.6s"><div class="bub"><svg class="ic"><use href="#i-truck"/></svg></div><b>فلتر</b><p>يكمّل بطلبات التوصيل بس</p></div>
       <div class="pwire"></div>
-      <div class="pnode in" style="--d:.9s"><div class="bub"><svg class="ic"><use href="#i-mail"/></svg></div><b>Gmail</b><p>إيميل تأكيد بالطلب والمبلغ</p><span class="toast pop" style="--d:2.4s"><svg class="ic"><use href="#i-check"/></svg>اتبعت التأكيد</span></div>
+      <div class="pnode in" style="--d:.9s"><div class="bub"><svg class="ic"><use href="#i-mail"/></svg></div><b>Gmail</b><p>إيميل تأكيد: المندوب جاي</p><span class="toast pop" style="--d:2.4s"><svg class="ic"><use href="#i-check"/></svg>اتبعت التأكيد</span></div>
     </div>
     <div class="row in" style="--d:1.2s;gap:18px;align-items:center;flex-wrap:wrap">
       <span class="chip"><b>Make</b> سيناريو بالسحب والإفلات</span>
@@ -1110,6 +1143,68 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
     </div>
     <div class="call next in" style="--d:1.5s"><svg class="ic"><use href="#i-bolt"/></svg><div><b>نفس فكرة «حدث ← إجراء»</b>بس الأداة بتشغّلها لوحدها طول اليوم، وإنت مش قاعد قدام الجهاز.</div></div>
     <aside class="notes">ده عرض من المدرب بس، والمتدربين يتفرجوا (مش محتاجين يعملوا حسابات). جهّز قبلها: حساب مجاني على Make أو Zapier، وفورم طلبات مربوط بشيت، وسيناريو: Google Sheets «Watch New Rows» ← Filter (الاستلام = توصيل) ← Gmail «Send an Email». وقت العرض: ابعت طلب من موبايلك قدام القاعة، ودوس Run once، وورّيهم الإيميل وهو بيوصل. لو النت ضعيف: سجّل فيديو قصير للتجربة قبلها واعرضه. الخطط المجانية ليها حد شهري للعمليات، وده كفاية للتجربة.</aside>
+  </div>
+
+  <div class="s" data-title="Make خطوة بخطوة 1: التجهيز" style="--c:#6D28D9">
+    <div class="kick"><span class="time">4:15</span><span class="axis">Make خطوة بخطوة · 1 من 3 · للمدرب</span></div>
+    <h2>قبل ما تفتح Make: الفورم والشيت</h2>
+    <div class="mk">
+      <ol class="mks">
+        <li class="f" data-s="0"><div><b>اعمل Google Form</b> فيه: الاسم، <span class="pill">الإيميل</span>، الصنف (قائمة)، الحجم (كبير/وسط)، الكمية، الاستلام (توصيل/استلام). الإيميل ضروري علشان التأكيد يوصل للعميل.</div></li>
+        <li class="f" data-s="1"><div><b>اربطه بشيت:</b> تبويب <code>Responses</code> ← <code>Link to Sheets</code> ← <code>Create</code>. هيتعمل شيت فيه تاب اسمه <code>Form Responses 1</code> (أو «ردود النموذج 1» لو جوجل عندك عربي).</div></li>
+        <li class="f" data-s="2"><div><b>ابعت طلب تجريبي واحد</b> من الفورم، علشان Make يشوف أسماء الأعمدة.</div></li>
+        <li class="f" data-s="3"><div><b>ادخل</b> <code>make.com</code> ← <code>Sign up</code> مجانًا بحساب جوجل ← من الصفحة الرئيسية <code>Create a new scenario</code>.</div></li>
+      </ol>
+      <div class="mkc">
+        <div class="fm f" data-s="0"><h4>اطلب عصيرك 🍹</h4><div>الاسم<i>*</i></div><div>الإيميل<i>*</i></div><div>الصنف<i>▾</i></div><div>الحجم<i>○ كبير ○ وسط</i></div><div>الكمية<i>*</i></div><div>الاستلام<i>○ توصيل ○ استلام</i></div></div>
+        <div class="darr f" data-s="1"></div>
+        <div class="shm f" data-s="1"><h5>Form Responses 1</h5><p class="h"><span>الاسم</span><span>الإيميل</span><span>الصنف</span><span>الاستلام</span></p><p class="f" data-s="2"><span>أحمد</span><span>a@…</span><span>مانجو</span><span>توصيل</span></p></div>
+      </div>
+    </div>
+    <aside class="notes">اعمل الخطوات دي قبل المحاضرة بيوم. اعمل الفورم على نفس حساب جوجل اللي هتربطه بـ Make. اختار للفورم «Don't collect emails» علشان يبان الإيميل كسؤال عادي، أو فعّل «Collect email addresses» وساعتها عمود الإيميل هيتعمل لوحده.</aside>
+  </div>
+
+  <div class="s" data-title="Make خطوة بخطوة 2: الشيت والإيميل" style="--c:#6D28D9">
+    <div class="kick"><span class="time">4:15</span><span class="axis">Make خطوة بخطوة · 2 من 3 · للمدرب</span></div>
+    <h2>وصّل الشيت بالإيميل</h2>
+    <div class="mk">
+      <ol class="mks">
+        <li class="f" data-s="0"><div><b>الموديول الأول:</b> دوس الدايرة الكبيرة <code>+</code> ← ابحث <code>Google Sheets</code> ← <code>Watch New Rows</code>.</div></li>
+        <li class="f" data-s="1"><div><b>اربط حسابك:</b> <code>Create a connection</code> ← <code>Sign in with Google</code> ← <code>Allow</code>.</div></li>
+        <li class="f" data-s="2"><div><b>الإعدادات:</b> <code>Spreadsheet</code> = شيت الطلبات · <code>Sheet Name</code> = <code>Form Responses 1</code> · <code>Table contains headers</code> = <code>Yes</code> · <code>Limit</code> = 10 ← <code>OK</code>. ولما يسأل تبدأ منين: <code>From now on</code>.</div></li>
+        <li class="f" data-s="3"><div><b>الموديول التاني:</b> دوس <code>+</code> على يمين الدايرة الخضرا ← <code>Gmail</code> ← <code>Send an email</code> ← اربط حساب Gmail بنفس الطريقة.</div></li>
+        <li class="f" data-s="4"><div><b>املا الإيميل:</b> في <code>To</code> دوس على الخانة واختار عمود <span class="pill">الإيميل</span> من القائمة اللي بتظهر (ما تكتبوش بإيدك). نفس الكلام في الموضوع والرسالة.</div></li>
+      </ol>
+      <div class="mkc">
+        <div class="mrow"><div class="mod"><div class="o" style="--m:#0F9D58"><svg class="ic"><use href="#i-table"/></svg></div><b>Google Sheets</b><span>Watch New Rows</span></div><div class="mlink f" data-s="3"></div><div class="f" data-s="3"><div class="mod"><div class="o" style="--m:#EA4335"><svg class="ic"><use href="#i-mail"/></svg></div><b>Gmail</b><span>Send an email</span></div></div></div>
+        <div class="mapc f" data-s="4">
+          <div><span>To</span><b><span class="pill">الإيميل</span></b></div>
+          <div><span>Subject</span><span>تأكيد طلبك من عصير المنيا</span></div>
+          <div><span>Content</span><span>أهلًا <span class="pill">الاسم</span>، طلبك <span class="pill">الكمية</span> <span class="pill">الصنف</span> <span class="pill">الحجم</span> اتسجل، والمندوب جاي.</span></div>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">الخانات الخضرا في الشاشة = أعمدة بتختارها من القائمة (Mapping)، مش نص بتكتبه. ده أهم مفهوم: Make بيحط بيانات كل طلب جديد مكانها لوحده. لو ربط Gmail عمل مشكلة (بيحصل أحيانًا مع حسابات الشركات)، جرّب حساب Gmail شخصي، أو بدّل الموديول بـ Google Sheets «Add a Row» في تاب «المندوب».</aside>
+  </div>
+
+  <div class="s" data-title="Make خطوة بخطوة 3: فلتر وتجربة" style="--c:#6D28D9">
+    <div class="kick"><span class="time">4:15</span><span class="axis">Make خطوة بخطوة · 3 من 3 · للمدرب</span></div>
+    <h2>فلتر… تجربة… وشغّلها</h2>
+    <div class="mk">
+      <ol class="mks">
+        <li class="f" data-s="0"><div><b>الفلتر:</b> دوس على الخط اللي بين الموديولين ← <code>Set up a filter</code> ← <code>Label</code> = «توصيل بس».</div></li>
+        <li class="f" data-s="1"><div><b>الشرط:</b> اختار عمود <span class="pill">الاستلام</span> ← <code>Text operators: Equal to</code> ← اكتب <b>توصيل</b> ← <code>OK</code>. كده طلبات الاستلام من المحل مش هتعدّي.</div></li>
+        <li class="f" data-s="2"><div><b>احفظ</b> بـ <code>Ctrl + S</code> وسمّي السيناريو «طلبات العصير».</div></li>
+        <li class="f" data-s="3"><div><b>جرّب قدام القاعة:</b> ابعت طلب توصيل من موبايلك ← دوس <code>Run once</code>. الرقم اللي يظهر فوق كل دايرة = عدد الطلبات اللي عدّت منها. افتح الإيميل.</div></li>
+        <li class="f" data-s="4"><div><b>شغّلها لوحدها:</b> فعّل مفتاح <code>Scheduling</code> واختار كل قد إيه يفحص. في الخطة المجانية أقل مدة 15 دقيقة، علشان كده في المحاضرة استخدم <code>Run once</code>.</div></li>
+      </ol>
+      <div class="mkc">
+        <div class="mrow"><div class="mod"><div class="o" style="--m:#0F9D58"><svg class="ic"><use href="#i-table"/></svg><em class="f" data-s="3">1</em></div><b>Google Sheets</b><span>Watch New Rows</span></div><div class="mlink"><div class="flt f" data-s="0"><svg class="ic"><use href="#i-tool"/></svg><small class="f" data-s="1">الاستلام = توصيل</small></div></div><div class="mod"><div class="o" style="--m:#EA4335"><svg class="ic"><use href="#i-mail"/></svg><em class="f" data-s="3">1</em></div><b>Gmail</b><span>Send an email</span></div></div>
+        <span class="toast f" data-s="3" style="position:static"><svg class="ic"><use href="#i-check"/></svg>وصل إيميل: «تأكيد طلبك من عصير المنيا»</span>
+        <div class="call safe f" data-s="4" style="font-size:19px;max-width:560px"><svg class="ic"><use href="#i-alert"/></svg><div><b>لو ماشتغلش</b>دوس على الرقم فوق الدايرة وشوف Output. أغلب المشاكل: اسم التاب غلط، أو عمود الإيميل فاضي، أو مفيش طلب جديد نزل من ساعة ما اخترت From now on.</div></div>
+      </div>
+    </div>
+    <aside class="notes">ترتيب التجربة: ابعت الطلب الأول، وبعدين Run once (Make بيقرا الصفوف الجديدة اللي نزلت). جرّب كمان طلب «استلام» وورّيهم إن الفلتر وقفه ومفيش إيميل. إضافة اختيارية: في Content اكتب المبلغ بمعادلة: if(الحجم = "كبير"; 30; 20) * الكمية، من تبويب الدوال في نافذة الـ Mapping.</aside>
   </div>
 
   <div class="s" data-title="البيانات والبرومبتات" style="--c:#0E7C86">
