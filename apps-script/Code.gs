@@ -178,7 +178,8 @@ const CONFIG_KEYS = [
   ['pre', 'رابط فورم الاختبار القبلي'],
   ['post', 'رابط فورم الاختبار البعدي'],
   ['fb1', 'رابط فورم فيدباك اليوم 1'],
-  ['fb2', 'رابط فورم فيدباك اليوم 2']
+  ['fb2', 'رابط فورم فيدباك اليوم 2'],
+  ['hidden', 'الشرايح المخفية (العرض بيكتبها لوحده، ما تعدّلهاش)']
 ];
 
 function readConfig_(sh) {
@@ -231,9 +232,19 @@ function saveConfig_(p) {
     const keys = sh.getRange(2, 1, Math.max(sh.getLastRow() - 1, 1), 1).getValues().map(function (r) { return String(r[0]).trim(); });
     CONFIG_KEYS.forEach(function (k) {
       if (!(k[0] in data)) return;
-      let v = String(data[k[0]] || '').trim().slice(0, 500);
-      if (k[0] === 'round') v = cleanRound_(v);
-      else if (v && !/^https?:\/\//i.test(v)) return; // روابط بس
+      const raw = String(data[k[0]] || '').trim();
+      let v;
+      if (k[0] === 'hidden') {
+        try {
+          const arr = JSON.parse(raw || '[]');
+          if (!Array.isArray(arr)) return;
+          v = JSON.stringify(arr.slice(0, 200).map(function (x) { return String(x).slice(0, 120); }));
+        } catch (err) { return; }
+      } else {
+        v = raw.slice(0, 500);
+        if (k[0] === 'round') v = cleanRound_(v);
+        else if (v && !/^https?:\/\//i.test(v)) return; // روابط بس
+      }
       const i = keys.indexOf(k[0]);
       if (i >= 0) sh.getRange(i + 2, 2).setValue(v);
     });

@@ -576,6 +576,15 @@ button{font:inherit;cursor:pointer}
 .slist button span{font-family:var(--mono);color:var(--muted);min-width:2.2ch;direction:ltr}
 .slist button.cur{background:var(--blue);color:#fff}
 .slist button.cur span{color:#fff}
+.slist .srow{display:flex;gap:4px}
+.slist .srow>button:first-child{flex:1}
+.slist .eye{flex:none;width:44px;justify-content:center;align-items:center;padding:0;color:var(--muted)}
+.slist .eye .ic{width:20px;height:20px}
+.slist .srow.off>button:first-child{opacity:.5;text-decoration:line-through}
+.slist .srow.off .eye{background:var(--magenta-soft);color:var(--magenta)}
+.slist .tagoff{font-family:var(--display);font-size:12px;background:var(--magenta);color:#fff;border-radius:999px;padding:1px 8px;margin-inline-start:auto;text-decoration:none}
+.hidden-mark{position:absolute;top:18px;left:22px;z-index:5;font-family:var(--display);font-size:16px;background:var(--magenta);color:#fff;border-radius:999px;padding:4px 14px;display:none}
+.s.is-hidden .hidden-mark{display:block}
 .notes-ov{position:fixed;right:16px;left:16px;bottom:70px;z-index:35;background:#FFFDF4;color:var(--ink);border-radius:18px;padding:16px 22px;font-size:17px;line-height:1.7;max-height:40vh;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.35);border-inline-start:6px solid var(--purple)}
 .notes-ov[hidden]{display:none}
 .notes-ov b{font-family:var(--display);color:var(--purple)}
@@ -1830,7 +1839,7 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
 </nav>
 <div class="notes-ov" id="notesOv" hidden></div>
 
-<div class="ov" id="menuOv" hidden><div class="panel"><h3>الشرائح</h3><div class="slist" id="slist"></div><div class="acts"><button data-close>إغلاق</button></div></div></div>
+<div class="ov" id="menuOv" hidden><div class="panel"><h3>الشرائح</h3><p>دوس العين علشان تخفي شريحة أو ترجّعها. الشريحة المخفية مش بتظهر وإنت بتقلّب، بس تقدر تفتحها من هنا. اختصار: <b>X</b> يخفي أو يظهر الشريحة الحالية.</p><div class="slist" id="slist"></div><div class="acts"><button data-close>إغلاق</button></div></div></div>
 
 <div class="ov" id="setOv" hidden><div class="panel">
   <h3>الإعدادات</h3>
@@ -1853,7 +1862,7 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
 
   var stage=document.getElementById('stage');
   var store={get:function(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set:function(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-  var cfg=Object.assign({script:DEFAULT_SCRIPT_URL,round:'',pre:'',post:'',fb1:'',fb2:''},store.get('aicr:cfg',{}));
+  var cfg=Object.assign({script:DEFAULT_SCRIPT_URL,round:'',pre:'',post:'',fb1:'',fb2:'',hidden:''},store.get('aicr:cfg',{}));
   if(!cfg.script)cfg.script=DEFAULT_SCRIPT_URL;
 
   /* ---------- scale ---------- */
@@ -1939,12 +1948,21 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
     if(push!==false&&location.hash!==h){try{history.replaceState(null,'',h)}catch(e){}}
     renderNotes();
   }
+  /* ---------- hidden slides ---------- */
+  function hiddenList(){try{var a=JSON.parse(cfg.hidden||'[]');return Array.isArray(a)?a:[]}catch(e){return[]}}
+  function sid(deck,s){return deck+':'+(s.dataset.title||'')}
+  function isHidden(deck,s){return deck!=='home'&&hiddenList().indexOf(sid(deck,s))>=0}
+  function markHidden(){Object.keys(decks).forEach(function(k){decks[k].slides.forEach(function(s){
+    if(!s.querySelector('.hidden-mark')){var m=document.createElement('div');m.className='hidden-mark';m.textContent='مخفية · مش هتظهر وإنت بتقلّب';s.appendChild(m)}
+    s.classList.toggle('is-hidden',isHidden(k,s))})})}
+  function toggleHidden(deck,i){if(deck==='home')return;var s=decks[deck].slides[i],id=sid(deck,s),a=hiddenList(),p=a.indexOf(id);
+    if(p>=0)a.splice(p,1);else a.push(id);cfg.hidden=JSON.stringify(a);store.set('aicr:cfg',cfg);markHidden();pushCfg(true);return p<0}
   function next(){var D=decks[cur.deck],s=D.slides[cur.i];
     if(cur.step<s._steps){cur.step++;applyStep(s,cur.step);return}
-    if(cur.i<D.slides.length-1)render(cur.deck,cur.i+1,0)}
+    for(var j=cur.i+1;j<D.slides.length;j++){if(!isHidden(cur.deck,D.slides[j])){render(cur.deck,j,0);return}}}
   function prev(){var D=decks[cur.deck],s=D.slides[cur.i];
     if(cur.step>0){cur.step--;applyStep(s,cur.step);return}
-    if(cur.i>0)render(cur.deck,cur.i-1,'end')}
+    for(var j=cur.i-1;j>=0;j--){if(!isHidden(cur.deck,D.slides[j])){render(cur.deck,j,'end');return}}}
   function fromHash(){var h=location.hash.slice(1);var m=/^(d1|d2)-(\d+)$/.exec(h);
     if(m)render(m[1],+m[2]-1,0,false);else if(h==='d1'||h==='d2')render(h,0,0,false);else render('home',0,0,false)}
   addEventListener('hashchange',fromHash);
@@ -1965,6 +1983,7 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
     else if(k==='s'||k==='S'||k==='س'){openSet()}
     else if(k==='t'||k==='T'||k==='ف'){var tm=decks[cur.deck].slides[cur.i].querySelector('.timer');if(tm)tm._toggle()}
     else if(k==='h'||k==='H'||k==='ا'){location.hash='home'}
+    else if((k==='x'||k==='X'||k==='ء')&&cur.deck!=='home'){var hid=toggleHidden(cur.deck,cur.i);flash(hid?'الشريحة دي اتخفت. مش هتظهر وإنت بتقلّب (X ترجّعها).':'الشريحة رجعت تظهر.',hid?'warn':'ok')}
     else if(k==='Escape'){closeAll()}
   });
   var tx=null,ty=null;
@@ -1987,8 +2006,13 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
   function renderNotes(){var ov=document.getElementById('notesOv');var s=decks[cur.deck].slides[cur.i];var n=s.querySelector('aside.notes');
     ov.hidden=!notesOn;ov.innerHTML='<b>ملاحظات المدرب · '+(s.dataset.title||'')+'</b><br>'+(n?n.innerHTML:'لا توجد ملاحظات لهذه الشريحة.')}
   function openMenu(){var l=document.getElementById('slist');l.innerHTML='';
-    decks[cur.deck].slides.forEach(function(s,i){var b=document.createElement('button');b.innerHTML='<span>'+(i+1)+'</span>'+(s.dataset.title||'');if(i===cur.i)b.className='cur';
-      b.onclick=function(){closeAll();render(cur.deck,i,0)};l.appendChild(b)});
+    var dk=cur.deck;decks[dk].slides.forEach(function(s,i){var row=document.createElement('div');row.className='srow';
+      var b=document.createElement('button');b.innerHTML='<span>'+(i+1)+'</span>'+esc(s.dataset.title||'');if(i===cur.i)b.className='cur';
+      b.onclick=function(){closeAll();render(dk,i,0)};row.appendChild(b);
+      if(dk!=='home'){var e=document.createElement('button');e.className='eye';
+        var paint=function(){var h=isHidden(dk,s);row.classList.toggle('off',h);e.title=h?'إظهار الشريحة':'إخفاء الشريحة';e.innerHTML='<svg class="ic"><use href="#'+(h?'i-x':'i-eye')+'"/></svg>'};
+        e.onclick=function(ev){ev.stopPropagation();toggleHidden(dk,i);paint()};paint();row.appendChild(e)}
+      l.appendChild(row)});
     document.getElementById('menuOv').hidden=false;var c=l.querySelector('.cur');if(c)c.scrollIntoView({block:'center'})}
   var fields={cfgScript:'script',cfgRound:'round',cfgPre:'pre',cfgPost:'post',cfgFb1:'fb1',cfgFb2:'fb2'};
   function openSet(){Object.keys(fields).forEach(function(id){document.getElementById(id).value=cfg[fields[id]]||''});document.getElementById('cfgPin').value=store.get('aicr:pin','');document.getElementById('setOv').hidden=false;document.getElementById('cfgScript').focus()}
@@ -1998,22 +2022,24 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
   document.querySelectorAll('.ov').forEach(function(o){o.addEventListener('click',function(e){if(e.target===o||e.target.hasAttribute('data-close'))closeAll()})});
 
   /* ---------- settings sync (Google Sheet) ---------- */
-  var SYNC_KEYS=['round','pre','post','fb1','fb2'];
+  var SYNC_KEYS=['round','pre','post','fb1','fb2','hidden'];
   function flash(msg,kind){var f=document.createElement('div');f.className='flash '+(kind||'');f.textContent=msg;document.body.appendChild(f);setTimeout(function(){f.remove()},5000)}
   function refreshSlide(){var s=decks[cur.deck]&&decks[cur.deck].slides[cur.i];if(s&&s.classList.contains('on')){deactivate(s);activate(s)}}
   function pullCfg(){if(!cfg.script)return;
     fetch(cfg.script+'?action=config').then(function(r){return r.json()}).then(function(j){if(!j||!j.ok||!j.config)return;var ch=false;
       SYNC_KEYS.forEach(function(k){var v=j.config[k];if(v&&cfg[k]!==v){cfg[k]=v;ch=true}});
-      if(ch){store.set('aicr:cfg',cfg);refreshSlide()}}).catch(function(){})}
-  function pushCfg(){if(!cfg.script){flash('اتحفظت على الجهاز ده بس (مفيش رابط سكريبت).','warn');return}
+      if(ch){store.set('aicr:cfg',cfg);markHidden();refreshSlide()}}).catch(function(){})}
+  function pushCfg(quiet){if(!cfg.script){if(!quiet)flash('اتحفظت على الجهاز ده بس (مفيش رابط سكريبت).','warn');return}
     var data={};SYNC_KEYS.forEach(function(k){data[k]=cfg[k]||''});
     var u=cfg.script+'?action=saveConfig&pin='+encodeURIComponent(store.get('aicr:pin',''))+'&data='+encodeURIComponent(JSON.stringify(data));
     fetch(u).then(function(r){return r.json()}).then(function(j){
+      if(quiet)return;
       if(j&&j.ok)flash('اتحفظت في الشيت ✓ وهتظهر على أي جهاز','ok');
       else if(j&&j.error==='nopin')flash('اتحفظت على الجهاز ده بس. اعمل كلمة سر من قائمة AICR في الشيت الأول.','warn');
       else if(j&&j.error==='badpin')flash('كلمة السر غلط. اتحفظت على الجهاز ده بس.','warn');
       else flash('اتحفظت على الجهاز ده بس. ماقدرتش أحفظ في الشيت.','warn')})
-    .catch(function(){flash('اتحفظت على الجهاز ده بس. حدّث السكريبت (Deploy ← New version) أو افتح العرض من GitHub Pages.','warn')})}
+    .catch(function(){if(!quiet)flash('اتحفظت على الجهاز ده بس. حدّث السكريبت (Deploy ← New version) أو افتح العرض من GitHub Pages.','warn')})}
+  markHidden();
   pullCfg();
 
   /* ---------- copy ---------- */
