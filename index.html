@@ -589,6 +589,13 @@ button{font:inherit;cursor:pointer}
 .notes-ov[hidden]{display:none}
 .notes-ov b{font-family:var(--display);color:var(--purple)}
 aside.notes{display:none}
+/* ---------- print / PDF (?print=d1 | d2) ---------- */
+@page{size:1600px 900px;margin:0}
+html.printing,html.printing body{height:auto;overflow:visible;background:#fff}
+html.printing *,html.printing *::before,html.printing *::after{animation-duration:0s!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:none!important}
+html.printing .stage{position:static;transform:none!important;width:1600px;height:auto;overflow:visible;box-shadow:none}
+html.printing .s{position:relative;width:1600px;height:900px;box-sizing:border-box;opacity:1;visibility:visible;transform:none;break-after:page;page-break-after:always;overflow:hidden;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+html.printing .s.no-print,html.printing .hidden-mark,html.printing .hud,html.printing .timer,html.printing .ov,html.printing .flash{display:none!important}
 kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);border-radius:6px;padding:0 6px;font-size:13px}
 
 /* home */
@@ -2110,7 +2117,18 @@ kbd{font-family:var(--mono);background:var(--soft);border:1px solid var(--line);
     body.innerHTML=h;
   }
 
-  fromHash();
+  var pm=/[?&]print=(d1|d2)\b/.exec(location.search);
+  if(pm){var PD=decks[pm[1]];document.documentElement.classList.add('printing');
+    Object.keys(decks).forEach(function(k){decks[k].el.hidden=k!==pm[1]});
+    PD.slides.forEach(function(s){
+      if(isHidden(pm[1],s)||s.querySelector('.live')){s.classList.add('no-print');return}
+      s.classList.add('on');applyStep(s,s._steps);
+      s.querySelectorAll('.tw').forEach(function(x){x._typed=true;x.textContent=x.dataset.full;x.classList.remove('tw-caret')});
+      s.querySelectorAll('.count').forEach(function(c){c.textContent=c.dataset.to});
+      s.querySelectorAll('[data-cfg]').forEach(function(el){var v=cfg[el.dataset.cfg];if(v)el.textContent=v});
+    });
+    document.title='AICR · '+(PD.label||pm[1]);
+  }else fromHash();
 })();
 </script>
 
